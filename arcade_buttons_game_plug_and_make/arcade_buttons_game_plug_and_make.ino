@@ -4,6 +4,7 @@ Arcade Buttons Game - Arduino Plug & Make Kit
 A simple game to compete agains another person about who press arcade buttons faster than the other one.
 
 Created by Julián Caro Linares for Arduino INC
+Arduino Cloud Integration with BLeValueSynch library done by Luca Doglione for Arduino INC
 
 CC-BY-SA
 */
