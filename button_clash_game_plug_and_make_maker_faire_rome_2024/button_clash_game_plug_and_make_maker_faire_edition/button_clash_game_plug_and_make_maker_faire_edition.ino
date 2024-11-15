@@ -1,10 +1,12 @@
 /*
 Arcade Buttons Game - Arduino Plug & Make Kit
 
-A simple game to compete agains another person about who press arcade buttons faster than the other one.
+Button Clash is an exciting and fun two-player game where the person who pushes the button faster wins! Built it with the Arduino Plug and Make kit.
 
 Created by Julián Caro Linares for Arduino INC
 Arduino Cloud Integration with BLeValueSynch library done by Luca Doglione for Arduino INC
+
+NOTE: This version uses two buzzers instead of one and uploads data though Arduino Cloud using the BleVAlueSynch and additional harware. Only suitable for Faires.
 
 CC-BY-SA
 */
@@ -12,8 +14,9 @@ CC-BY-SA
 #include "Modulino.h"
 #include "ArduinoGraphics.h"
 #include "Arduino_LED_Matrix.h"
-#include <LedControl.h>
+#include <BleValueSync.h>
 
+#define BLE_SYNC
 
 // Global definitions
 #define BUTTON_A 2
@@ -26,6 +29,13 @@ ModulinoButtons buttons;
 ModulinoBuzzer buzzer_b(0x0A); // Not default address; use Examples -> Modulino -> Utilities -> AddressChanger to change it to 0x0A
 ModulinoBuzzer buzzer_a; 
 
+#ifdef BLE_SYNC
+/* BT Service and properties */
+long stopTime = 0;
+BleSync ble("ButtonGame", "f49ac8f5-f53b-4ba2-a023-5c91b7b7cc7e", 2);
+BleSyncValue bleAWin("3e0038a2-41f6-48a4-b672-9fef4c89ab34", BLERead | BLEWrite);
+BleSyncValue bleBWin("07956398-0434-4320-ad28-2b1579f64278", BLERead | BLEWrite);
+#endif
 
 // Global Variables
 int skip = 0;
@@ -131,6 +141,12 @@ void setup() {
   digitalWrite(LIGHT_BUTTON_A, LOW);
   digitalWrite(LIGHT_BUTTON_B, LOW);
 
+
+  #ifdef BLE_SYNC
+  ble.addValue(&bleAWin);
+  ble.addValue(&bleBWin);
+  ble.initBLE();
+  #endif
 }
 
 void loop() {
@@ -184,6 +200,14 @@ void loop() {
       case 1: // Game End
         // buttons.update();
         
+        #ifdef BLE_SYNC
+        if(winner == 'a'){
+          bleAWin.setValue(bleAWin.getValue()+1);  
+        } else if(winner == 'b') {
+          bleBWin.setValue(bleBWin.getValue()+1);
+        }
+        #endif
+
         win_animation();
         push_a = false;
         push_b = false;
@@ -238,6 +262,17 @@ void loop() {
             digitalWrite(LIGHT_BUTTON_B, LOW);
             push_b = false; 
             delay(50);
+          } else {
+            #ifdef BLE_SYNC
+            if(stopTime == 0){
+              stopTime = millis();
+            } else if(millis() - stopTime >= 3000){
+              stopTime = 0;
+              Serial.println("syncing");
+              ble.sync(2000);
+            }
+            #endif
+          }
 
           digitalWrite(LIGHT_BUTTON_A, HIGH);
           digitalWrite(LIGHT_BUTTON_B, HIGH);
