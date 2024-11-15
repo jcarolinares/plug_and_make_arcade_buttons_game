@@ -12,6 +12,9 @@ CC-BY-SA
 #include "ArduinoGraphics.h"
 #include "Arduino_LED_Matrix.h"
 #include <LedControl.h>
+#include <BleValueSync.h>
+
+#define BLE_SYNC
 
 // Global definitions
 #define BUTTON_A 2
@@ -23,6 +26,14 @@ CC-BY-SA
 ModulinoButtons buttons; 
 ModulinoBuzzer buzzer_b(0x0A); // Not default address; use Examples -> Modulino -> Utilities -> AddressChanger to change it to 0x0A
 ModulinoBuzzer buzzer_a; 
+
+#ifdef BLE_SYNC
+/* BT Service and properties */
+long stopTime = 0;
+BleSync ble("ButtonGame", "f49ac8f5-f53b-4ba2-a023-5c91b7b7cc7e", 2);
+BleSyncValue bleAWin("3e0038a2-41f6-48a4-b672-9fef4c89ab34", BLERead | BLEWrite);
+BleSyncValue bleBWin("07956398-0434-4320-ad28-2b1579f64278", BLERead | BLEWrite);
+#endif
 
 // Global Variables
 int skip = 0;
@@ -127,6 +138,13 @@ void setup() {
   // Buttons Light OFF (Low bright, 5V output)
   digitalWrite(LIGHT_BUTTON_A, LOW);
   digitalWrite(LIGHT_BUTTON_B, LOW);
+
+
+  #ifdef BLE_SYNC
+  ble.addValue(&bleAWin);
+  ble.addValue(&bleBWin);
+  ble.initBLE();
+  #endif
 }
 
 void loop() {
@@ -179,6 +197,15 @@ void loop() {
     
       case 1: // Game End
         // buttons.update();
+        
+        #ifdef BLE_SYNC
+        if(winner == 'a'){
+          bleAWin.setValue(bleAWin.getValue()+1);  
+        } else if(winner == 'b') {
+          bleBWin.setValue(bleBWin.getValue()+1);
+        }
+        #endif
+
         win_animation();
         push_a = false;
         push_b = false;
@@ -200,6 +227,7 @@ void loop() {
 
         while(state == 3)
         {
+
           buttons.update(); // Modulino buttons reading
           if ((digitalRead(BUTTON_A) == false && digitalRead(BUTTON_B) == false) || (buttons.isPressed(0) || buttons.isPressed(1) || buttons.isPressed(2)))
           {
@@ -232,6 +260,16 @@ void loop() {
             digitalWrite(LIGHT_BUTTON_B, LOW);
             push_b = false; 
             delay(50);
+          } else {
+            #ifdef BLE_SYNC
+            if(stopTime == 0){
+              stopTime = millis();
+            } else if(millis() - stopTime >= 3000){
+              stopTime = 0;
+              Serial.println("syncing");
+              ble.sync(2000);
+            }
+            #endif
           }
 
           digitalWrite(LIGHT_BUTTON_A, HIGH);
