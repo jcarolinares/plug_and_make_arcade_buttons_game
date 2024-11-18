@@ -21,7 +21,8 @@ CC-BY-SA
 
 // Modulino objects 
 ModulinoButtons buttons; 
-ModulinoBuzzer buzzer; 
+ModulinoBuzzer buzzer;
+// ModulinoBuzzer buzzer_b(0x0A);
 
 
 // Global Variables
@@ -97,11 +98,12 @@ const uint32_t heart[] = {
 };
 
 const uint32_t arrows_start[] = {
-		0xf0fc03a0,
-		0x59090900,
 		0x0,
-		0x66
+		0x90909a,
+		0x5c03f0f,
+		66
 };
+
 
 void setup() {
   Serial.begin(115200);
@@ -110,6 +112,7 @@ void setup() {
   // Modulinos setup
   Modulino.begin();
   buzzer.begin();
+  // buzzer_b.begin();
   buttons.begin();
   buttons.setLeds(true, true, true);
 
@@ -230,12 +233,12 @@ void loop() {
             digitalWrite(LIGHT_BUTTON_B, LOW);
             push_b = false; 
             delay(50);
+          }
 
           digitalWrite(LIGHT_BUTTON_A, HIGH);
           digitalWrite(LIGHT_BUTTON_B, HIGH);
           delay(10);
           break;
-      }
     }
   }
 }
