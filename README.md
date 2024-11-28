@@ -1,13 +1,23 @@
-# plug_and_make_arcade_buttons_game
+# Button Clash
 
-A small game where two persons competes again to each other to see who press a button a number of times faster than the other. Made with the Arduino Plug and Make kit.
+Button Clash is an exciting two-player game where the person who pushes their button faster wins! Built it with the Arduino Plug and Make kit.
 
-# Assembly
+![Gameplay](aux/img/button-2.gif)
 
-The game can easily adopt different shapes and be quickly adapted to different surfaces and needs. Just keep in mind people with beat the buttons as fast as possible so the surface must be strong enough to resist the force applied during the game.
+All the step-by-step instructions, including connection digrams, can be found in Arduino ProjectHub:
 
-You will need a surface or box big enough to hold the Arduino Plug and Make Kit with the base plate + space for two arcade buttons. Check the Bill Of Materials inside the 'aux' folder to know more.
+[https://projecthub.arduino.cc/jcarolinares/e59c12e6-bb73-4bd0-ba05-4578863eeb37](https://projecthub.arduino.cc/jcarolinares/e59c12e6-bb73-4bd0-ba05-4578863eeb37)
 
-# Setup
+You can find the Arduino sketch of the project at the folder "button_clash_game_plug_and_make". There is an additional version of the program that uses two buzzers instead of one in the "Maker Faire folder".
 
-# Additional Notes and Links
+
+Connect the arcade buttons following the diagram from below:
+
+![Connection Diagram](aux/img/v6_button-clash.png)
+
+Once you have everything connected you just need to upload the code to your board, have fun!
+
+***
+
+<a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Licencia Creative Commons" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /></a><br /><span xmlns:dct="http://purl.org/dc/terms/" property="dct:title">Button Clash</span> by <span xmlns:cc="http://creativecommons.org/ns#" property="cc:attributionName">Julián Caro Linares for Arduino Inc</span> licensed by <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>.<br /><br />
+
